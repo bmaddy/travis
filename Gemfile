@@ -12,10 +12,10 @@ gem 'calendar_date_select'
 gem 'fastercsv'
 gem 'pg'
 gem 'restful_authentication'
+gem 'color'
 
 group :development do
   gem 'ruby-debug19'
-  gem 'color'
 end
 group :test do
   gem 'mocha'
