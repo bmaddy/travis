@@ -3,7 +3,7 @@ class StoriesController < ApplicationController
   before_filter :load_parent
   def index
     if(params[:q])
-      @stories = do_paginated_solr_search(params[:q], params[:page])
+      @stories = Sunspot.search(Story){|q|q.paginate(:page=>params[:page]);q.fulltext(params[:q])}.hits
     else
       unless @iteration
         @stories=Story.paginate(:page=>params[:page], :order=>'created_at asc')
@@ -133,20 +133,6 @@ class StoriesController < ApplicationController
     iter ? redirect_to(iteration_path(iter)) : redirect_to(stories_path)
   end
 
-  def do_paginated_solr_search(query, page)
-    page = page.nil? ? 1 : page.to_i
-    offset = Story.per_page * (page - 1)
-    WillPaginate::Collection.create(page, Story.per_page) do |pager|
-      result = Story.find_by_solr(query, :offset => offset, :limit => Story.per_page, :order => "stories.created_at asc").results
-      # inject the result array into the paginated collection:
-      pager.replace(result)
-
-      unless pager.total_entries
-        # the pager didn't manage to guess the total count, do it manually
-        pager.total_entries = Story.count_by_solr(query)
-      end
-    end
-  end
 
   private
   def load_parent

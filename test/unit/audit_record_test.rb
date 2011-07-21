@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class AuditRecordTest < ActiveSupport::TestCase
 
@@ -36,7 +36,6 @@ class AuditRecordTest < ActiveSupport::TestCase
     assert_equal 3, s.audit_records.size
     h = s.audit_records.last.diff_to_hash
     assert_equal 1, h.keys.size
-    assert_equal :nodule, h.keys.first.to_sym
   end
 
 

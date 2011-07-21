@@ -2,10 +2,17 @@ class UnifiedSearchController < ApplicationController
   before_filter :login_required
 
   def index
-    @bugs = BugsController.new.do_paginated_solr_search(params[:q], params[:page])
-    @stories = StoriesController.new.do_paginated_solr_search(params[:q], params[:page])
+    @stories  = Sunspot.search(Story)do
+      fulltext params[:q]
+      paginate(:page=>params[:page])
+    end
+    @bugs  = Sunspot.search(Bug)do
+      fulltext params[:q]
+      paginate(:page=>params[:page])
+    end
+
+    @all_story_results = @stories.hits
     
-    @all_story_results = Story.find_by_solr(params[:q], :limit => 100000000).docs
     @stories_swag = @all_story_results.sum {|s| s.swag || 0 }
     @passed_stories_count = state_count(@all_story_results, "passed")
     @passed_stories_swag = sum_swag_by_state(@all_story_results, "passed")

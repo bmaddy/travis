@@ -18,6 +18,7 @@
 #  cached_tag_list :string(255)
 #
 
+require 'sunspot_rails'
 class Story < ActiveRecord::Base
   attr_accessor :creator
   acts_as_taggable
@@ -30,7 +31,11 @@ class Story < ActiveRecord::Base
     :after_add=>Proc.new{|s, t| s.task_changed! }, 
     :after_remove=>Proc.new{|s,t| s.task_changed!}
 
-  acts_as_solr :fields => [:title, :description, :cached_tag_list]
+  searchable do
+    text :title
+    text :description
+    text :cached_tag_list
+  end
   
   before_create { |record| record.audit_records.build(:diff=>{:self=>[:nonexistent, :existent]}.to_yaml, 
                                                               :login=>(User.current_user ? User.current_user.login : 'some guy')) }
@@ -48,7 +53,6 @@ class Story < ActiveRecord::Base
   validates_presence_of :nodule
   validates_length_of :title, :within=>4..200
 
-  validates_url_format_of :salesforce_url, :allow_nil => true, :allow_blank => true
   validates_length_of :salesforce_url, :within=>1..100, :allow_nil => true, :allow_blank => true
   validates_numericality_of :salesforce_ticket_nbr, :allow_nil=>true
 
@@ -115,8 +119,10 @@ class Story < ActiveRecord::Base
   private 
   
   def set_mnemonic
-    sname = self.nodule.squeeze.gsub(/[^a-zA-Z]/,'')[0,4]
-    self.update_attribute(:mnemonic,("%s-%d"%[sname,self.id]).upcase)
+    unless self[:mnemonic]
+      sname = self.nodule.squeeze.gsub(/[^a-zA-Z]/,'')[0,4]
+      self.update_attribute(:mnemonic,("%s-%d"%[sname,self.id]).upcase[0..9])
+    end
   end
   
   # used by will_paginate

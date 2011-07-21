@@ -3,7 +3,7 @@ class CreateStories < ActiveRecord::Migration
     create_table :stories do |t|
       t.column :title, :string, :limit=>200
       t.column :description, :text
-      t.column :swag, :decimal, :precision=>4, :scale=>2
+      t.column :swag, :decimal, :precision=>8, :scale=>2
 
       t.timestamps
     end

@@ -35,6 +35,7 @@ two:
   mnemonic: Crea-2
   nodule: foo
   tasks: one, two
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
 
 three:
   title: 'Yet Another Story'
@@ -42,6 +43,7 @@ three:
   swag: 2.7
   mnemonic: YETA-3
   nodule: foo
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
 
 four:
   title: 'This one'
@@ -50,6 +52,7 @@ four:
   iteration: iter_next
   mnemonic: THIS-4
   nodule: foo
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
 unswagged:
   #id: 5
   title: 'this has no swag'
@@ -57,6 +60,7 @@ unswagged:
   iteration: iter_next
   mnemonic: THIS-5
   nodule: foo
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
 passed:
   #id: 6
   title: 'this has passed'
@@ -67,12 +71,14 @@ passed:
   mnemonic: THIS-6
   nodule: foo
   tasks: completed, also_completed
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
 open:
   #id: 7
   title: 'this is not passed'
   description: 'desc'
   state: new
   swag: 7.0
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
   iteration: iter_current
   mnemonic: THIS-7
   nodule: foo
@@ -84,6 +90,7 @@ in_qc:
   iteration: iter_current
   mnemonic: THIS-8
   nodule: foo
+  salesforce_url: "https://ssl.salesforce.com/50000000002GL3D"
 failed:
   title: 'this is failed'
   description: 'desc'

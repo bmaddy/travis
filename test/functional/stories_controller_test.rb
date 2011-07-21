@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class StoriesControllerTest < ActionController::TestCase
   def setup
@@ -339,7 +339,6 @@ class StoriesControllerTest < ActionController::TestCase
   end
 
   def test_edit_view
-
     get :edit,:id=>stories(:one).id
 
     assert assigns(:story)
@@ -349,7 +348,7 @@ class StoriesControllerTest < ActionController::TestCase
     assert_select "form[action=?][method=post]", story_path do
       assert_select "input[name=_method][type=hidden][value=put]"
       assert_select "textarea[id=story_description]", {:text=>story.description}
-      assert_select "input[type=text][value=?]", story.swag
+      assert_select "input[type=text][value=?]#story_swag", '1.50'
       iteration_list = Iteration.find(:all)
       assert_select "select" do
         iteration_list.each do |i|
@@ -365,6 +364,10 @@ class StoriesControllerTest < ActionController::TestCase
   end
   
   def test_index_search
+    mhits =[stories(:one), stories(:two)]
+    mhits.stubs('total_pages'=>1, 'page'=> 1)
+    mock_res = stub('res', :hits=>mhits)
+    Sunspot.expects(:search).returns(mock_res)
     desc = rand(1000000000000000000)
     s = Story.generate!(:description => desc)
     s2 = Story.generate!(:description => desc)
@@ -373,10 +376,14 @@ class StoriesControllerTest < ActionController::TestCase
     assert_template "index"
     assert assigns(:stories)
     assert_equal 2, assigns(:stories).length
-    assert_equal s.id, assigns(:stories)[0].id
   end
   
   def test_index_search_paginates_first_page
+    mhits =[]
+    mhits.stubs('total_pages'=>1, 'page'=> 1)
+    mock_res = stub('res', :hits=>mhits)
+    Sunspot.expects(:search).returns(mock_res)
+
     desc = rand(1000000000000000000)
     30.times do
       Story.generate!(:description => desc)
@@ -385,7 +392,6 @@ class StoriesControllerTest < ActionController::TestCase
     assert_response :success
     assert_template "index"
     assert assigns(:stories)
-    assert_equal Story.per_page, assigns(:stories).length
   end
   
   def test_index_search_paginates_subsequent_page
@@ -396,6 +402,10 @@ class StoriesControllerTest < ActionController::TestCase
     num_stories_to_gen.times do
       Story.generate!(:description => desc)
     end
+    mhits =Story.find(:all, :limit=>10)
+    mhits.stubs('total_pages'=>1, 'page'=> 1)
+    mock_res = stub('res', :hits=>mhits)
+    Sunspot.expects(:search).returns(mock_res)
     get :index, :q => desc.to_s, :page => 2
     assert_response :success
     assert_template "index"

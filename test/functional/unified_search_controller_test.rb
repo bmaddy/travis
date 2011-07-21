@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class UnifiedSearchControllerTest < ActionController::TestCase
 
@@ -7,9 +7,15 @@ class UnifiedSearchControllerTest < ActionController::TestCase
   end
   
   def test_search
-    collection = WillPaginate::Collection.new(1, Story.count, Story.count).replace(Story.all)
-    StoriesController.any_instance.stubs(:do_paginated_solr_search).returns(collection)
-    Story.stubs(:find_by_solr).returns(ActsAsSolr::SearchResults.new({:docs => Story.all}))
+    stories = Story.find(:all, :limit=>10)
+    bugs = Bug.find(:all, :limit=>10)
+    bugs.stubs('total_pages'=>1)
+    stories.stubs('total_pages'=>1)
+    mock_sres=stub('results', 'hits'=>stories, 'total_pages'=>1)
+    mock_bres=stub('results', 'hits'=>bugs,  'total_pages'=>1)
+
+    Sunspot.expects(:search).with(Story).returns(mock_sres)
+    Sunspot.expects(:search).with(Bug).returns(mock_bres)
     
     get :index, :q => 'irrelevant', :page => 1
     assert_response :success

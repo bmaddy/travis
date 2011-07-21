@@ -1,3 +1,5 @@
+require 'bluecloth'
+require 'calendar_date_select'
 module ActionController
   class AbstractRequest < ActionController::Request
     def self.relative_url_root=(path)

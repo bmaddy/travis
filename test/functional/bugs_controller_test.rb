@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class BugsControllerTest < ActionController::TestCase
 
@@ -207,8 +207,8 @@ class BugsControllerTest < ActionController::TestCase
     assert_response :success
     b1.reload
     b2.reload
-    assert_equal %w(some dumb tag), b1.tag_list
-    assert_equal %w(foo some dumb tag), b2.tag_list
+    assert_equal %w(some dumb tag).sort, b1.tag_list.sort
+    assert_equal %w(foo some dumb tag).sort, b2.tag_list.sort
   end
 
 end

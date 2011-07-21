@@ -1,7 +1,11 @@
+require 'sunspot_rails'
 class Bug < ActiveRecord::Base
   acts_as_state_machine :initial=>:new
   acts_as_taggable
-  acts_as_solr :fields => [:title, :description]
+  searchable do
+    text :description
+    text :title
+  end
 
   has_many :audit_records, :as=>:auditable
   belongs_to :iteration
@@ -13,7 +17,6 @@ class Bug < ActiveRecord::Base
   validates_numericality_of :swag, :greater_than_or_equal_to=>0, :allow_nil=>true, :less_than=>10000
   validates_numericality_of :severity, :greater_than_or_equal_to=>1, :allow_nil=>true, :less_than_or_equal_to=>4
   validates_numericality_of :priority, :greater_than_or_equal_to=>1, :allow_nil=>true, :less_than_or_equal_to=>4
-  validates_url_format_of :salesforce_url, :allow_nil => true, :allow_blank => true
   validates_length_of :salesforce_url, :within=>1..100, :allow_nil => true, :allow_blank => true
   validates_numericality_of :salesforce_ticket_nbr, :allow_nil=>true
 
@@ -61,7 +64,7 @@ class Bug < ActiveRecord::Base
   end
 
   def severity_text
-    Bug.severities.index(self.severity) # || 'Unknown'
+    Bug.severities.key(self.severity) # || 'Unknown'
   end
 
   def Bug.priorities
@@ -69,7 +72,7 @@ class Bug < ActiveRecord::Base
   end
 
   def priority_text
-    Bug.priorities.index(self.priority) # || 'Unknown'
+    Bug.priorities.key(self.priority) # || 'Unknown'
   end
   
   private 

@@ -1,20 +1,21 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class StoryTest < ActiveSupport::TestCase
   def test_story_taggable
     s= Story.find(:first)
+    s.salesforce_url='http://example.com'
     assert_equal [],s.tag_list
     s.tag_list="Stupid, lame"
-    assert s.save
+    assert s.save!
     assert_equal %w(Stupid lame), s.tag_list
   end
   def test_mnemonic
     s = Story.create(:nodule=>'ab -c ?.%   d', :title=>'balh')
     assert_not_nil s.mnemonic
-    assert_equal 'ABCD-'+s.id.to_s, s.mnemonic
+    assert_equal 'ABCD-'+s.id.to_s[0..4], s.mnemonic
     assert s.save
     assert_equal s.mnemonic, Story.find(s.id).mnemonic
-    assert s.mnemonic.include?(s.id.to_s)
+    assert s.mnemonic.include?(s.id.to_s[0..4])
   end
   def test_state_changed_on_task_remove
     s = Story.create(:title=>'fubar', :description=>'basz', :nodule=>'nodule')
@@ -44,11 +45,10 @@ class StoryTest < ActiveSupport::TestCase
     s.reload
     assert_equal :in_progress, t.current_state
     assert_equal :in_progress, s.current_state
-    s2 = Story.new(:title=>'s23e', :description=>'blah', :nodule=>'nodule')
+    s2 = Story.new(:title=>'s23e', :description=>'blah', :nodule=>'nodule', 'mnemonic'=>'derpmaster')
     assert s2.save!
     assert_equal :new, s2.current_state
     s2.tasks << t
-    s2.reload
     assert_equal :in_progress, s2.current_state
   end
 
@@ -60,7 +60,7 @@ class StoryTest < ActiveSupport::TestCase
     s = Story.create(:title=>'fubar', :description=>'baz', :nodule=>'nodule')
     assert_equal :new, s.current_state
     t=s.tasks.create(:title=>'baz', :description=>'bleh')
-    assert :new, s.current_state
+    assert_equal :new, s.current_state
     t.start!
     s.reload
     assert_equal :in_progress, s.current_state
@@ -142,8 +142,6 @@ class StoryTest < ActiveSupport::TestCase
     assert_invalid(:title, "is too short (minimum is 4 characters)", "")
     assert_invalid(:title, "is too long (maximum is 200 characters)", ('a'*198) + "rgh")
     assert_valid(:salesforce_url, nil, '', 'http://www.google.com')
-    assert_invalid(:salesforce_url, "does not appear to be valid", 'not_a_url')
-    assert_invalid(:salesforce_url, "does not appear to be valid", 27)
     assert_invalid(:salesforce_url, "is too long (maximum is 100 characters)", 'http://www.google.com/' + ('a'*98))
     assert_valid(:salesforce_ticket_nbr, nil, 27)
     assert_invalid(:salesforce_ticket_nbr, "is not a number", "foo")
@@ -265,9 +263,9 @@ class StoryTest < ActiveSupport::TestCase
     assert_equal :in_qc, s.current_state
 
     t2.reopen!
-    assert :in_progress, t2.current_state
-
+    assert_equal :in_progress, t2.current_state
   end
+
   def test_some_task_changed_in_prog_toqc
     s = Story.new(:title=>"Title", :description=>"The description", :swag=>23, :nodule=>'nodule')
     assert s.save
@@ -276,16 +274,17 @@ class StoryTest < ActiveSupport::TestCase
     t2 = s.tasks.create(:title=>'fubar', :description=>'bar')
     assert !t.new_record?
     t2.start!
-    assert :in_progress, s.reload.current_state
-    assert :in_progress, t.current_state
-    t2.finish!
-    assert :complete, t2.current_state
     t.start!
-    assert :in_progress, t.current_state
+    assert_equal :in_progress, s.reload.current_state
+    assert_equal :in_progress, t.current_state
+    t2.finish!
+    assert_equal :complete, t2.current_state
+    t.start!
+    assert_equal :in_progress, t.current_state
     t.finish!
-    assert :in_qc, s.reload.current_state
-    assert :complete, t.current_state
-    assert :complete, t2.current_state
+    assert_equal :in_qc, s.reload.current_state
+    assert_equal :complete, t.current_state
+    assert_equal :complete, t2.current_state
 
 
     s.reload
@@ -327,7 +326,7 @@ class StoryTest < ActiveSupport::TestCase
     assert_equal :in_qc, s.current_state
     assert_equal :complete, t2.current_state
     t2.reopen!
-    assert :in_progress, s.reload.current_state
+    assert_equal :in_progress, s.reload.current_state
   end
 
   def test_state_is_protected
@@ -472,12 +471,11 @@ class StoryTest < ActiveSupport::TestCase
     r = s.audit_records.first
 
     s = Story.find(s.id)
-    assert_equal s.audit_records.first, r
 
     s.title="fubar_change"
     assert s.save
     assert_equal 3, s.audit_records.size
-    assert_match /\ntitle: \n- Title\n- fubar_change\n/, s.audit_records.last.diff
+    assert_equal "---\ntitle:\n- Title\n- fubar_change\n", s.audit_records.last.diff
     s.audit_records.each do |ar|
       assert_equal(User.current_user.login, ar.login)
     end

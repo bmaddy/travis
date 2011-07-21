@@ -1,3 +1,4 @@
+require 'will_paginate'
 class TasksController < ApplicationController
   before_filter :login_required
   before_filter :find_stories, :only => [:new, :edit] 

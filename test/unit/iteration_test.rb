@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class IterationTest < ActiveSupport::TestCase
   def test_fixtures
@@ -59,8 +59,8 @@ class IterationTest < ActiveSupport::TestCase
   end
   def test_total_points
     i = iterations(:iter_current)
-    assert 2, i.stories.size
-    assert 1, i.bugs.size
+    assert_equal 4, i.stories.size
+    assert_equal 2, i.bugs.size
     assert_equal 419.8, iterations(:iter_current).total_points
   end
   def test_open_points

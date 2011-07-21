@@ -1,0 +1,87 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    actionmailer (2.3.12)
+      actionpack (= 2.3.12)
+    actionpack (2.3.12)
+      activesupport (= 2.3.12)
+      rack (~> 1.1.0)
+    activerecord (2.3.12)
+      activesupport (= 2.3.12)
+    activeresource (2.3.12)
+      activesupport (= 2.3.12)
+    activesupport (2.3.12)
+    archive-tar-minitar (0.5.2)
+    bluecloth (2.1.0)
+    builder (3.0.0)
+    calendar_date_select (1.16.3)
+    color (1.4.1)
+    columnize (0.3.4)
+    escape (0.0.4)
+    fastercsv (1.5.4)
+    haml (3.1.2)
+    linecache19 (0.5.12)
+      ruby_core_source (>= 0.1.4)
+    little-plugger (1.1.2)
+    lockfile (1.4.3)
+    logging (1.5.2)
+      little-plugger (>= 1.1.2)
+    mocha (0.9.12)
+    nokogiri (1.5.0)
+    object_daddy (0.4.3)
+    pg (0.11.0)
+    pr_geohash (1.0.0)
+    rack (1.1.2)
+    rails (2.3.12)
+      actionmailer (= 2.3.12)
+      actionpack (= 2.3.12)
+      activerecord (= 2.3.12)
+      activeresource (= 2.3.12)
+      activesupport (= 2.3.12)
+      rake (>= 0.8.3)
+    rake (0.9.2)
+    restful_authentication (1.1.6)
+      rails (~> 2.3.4)
+    rsolr (0.12.1)
+      builder (>= 2.1.2)
+    ruby-debug-base19 (0.11.25)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
+    ruby_core_source (0.1.5)
+      archive-tar-minitar (>= 0.5.2)
+    sunspot (1.2.1)
+      escape (= 0.0.4)
+      pr_geohash (~> 1.0)
+      rsolr (= 0.12.1)
+    sunspot_rails (1.2.1)
+      nokogiri
+      sunspot (= 1.2.1)
+    will_paginate (2.3.15)
+    ziya (2.3.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bluecloth
+  calendar_date_select
+  color
+  fastercsv
+  haml
+  lockfile
+  logging
+  mocha
+  object_daddy
+  pg
+  rails (= 2.3.12)
+  restful_authentication
+  ruby-debug19
+  sunspot
+  sunspot_rails
+  will_paginate
+  ziya

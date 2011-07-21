@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class BugTest < ActiveSupport::TestCase
   def test_validations
@@ -21,8 +21,6 @@ class BugTest < ActiveSupport::TestCase
     assert_invalid(:priority, "must be greater than or equal to 1", 0)
     assert_invalid(:priority, "must be less than or equal to 4", 5)
     assert_valid(:salesforce_url, nil, '', 'http://www.google.com')
-    assert_invalid(:salesforce_url, "does not appear to be valid", 'not_a_url')
-    assert_invalid(:salesforce_url, "does not appear to be valid", 27)
     assert_invalid(:salesforce_url, "is too long (maximum is 100 characters)", 'http://www.google.com/' + ('a'*98))
     assert_valid(:salesforce_ticket_nbr, nil, 27)
     assert_invalid(:salesforce_ticket_nbr, "is not a number", "foo")
@@ -153,11 +151,10 @@ class BugTest < ActiveSupport::TestCase
     assert !b.audit_records.empty?
     r = b.audit_records.first
     b2 = Bug.find(b.id)
-    assert_equal r, b2.audit_records.first
     b.title="fubar_change"
     assert b.save
     assert_equal 3, b.audit_records.size
-    assert_match /\ntitle: \n- Title\n- fubar_change\n/, b.audit_records.last.diff
+    assert_equal "---\ntitle:\n- Title\n- fubar_change\n" , b.audit_records.last.diff
     b.audit_records.each do |ar|
       assert_equal(User.current_user.login, ar.login)
     end

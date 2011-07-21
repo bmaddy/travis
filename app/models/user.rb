@@ -1,4 +1,5 @@
 require 'digest/sha1'
+require 'restful_authentication'
 
 class User < ActiveRecord::Base
   include Authentication

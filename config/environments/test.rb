@@ -21,11 +21,3 @@ config.action_controller.allow_forgery_protection    = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
-IN_TM = !ENV['TM_DIRECTORY'].nil? || ENV['INSIDE_EMACS']
-ON_BUILDBOX = (ENV['HOSTNAME'] == 'buildbox.office.gdi')
-
-unless IN_TM || ON_BUILDBOX
-  config.gem 'redgreen'
-end
-config.gem 'mocha'
-config.gem 'nofxx-object_daddy', :version => '>=0.3.1', :lib => 'object_daddy', :source => 'http://gems.github.com'

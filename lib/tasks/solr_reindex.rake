@@ -62,8 +62,10 @@ namespace :solr do
   def env_to_bool(env, default)
     env = ENV[env] || ''
     case env
-      when /^true$/i: true
-      when /^false$/i: false
+      when /^true$/i
+        true
+      when /^false$/i
+        false
       else default
     end
   end

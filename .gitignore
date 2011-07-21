@@ -3,7 +3,9 @@ db/*.db
 db/schema.rb
 db/*.sqlite3
 db/*.sqlite3-journal
-log/*.log
+log/*
+tags
+*.swp
 tmp/**/*
 doc/api
 doc/app
@@ -19,3 +21,4 @@ vendor/plugins/acts_as_solr/solr/tmp/*
 tmp/restart.txt
 debug.log
 solr/*
+bin/
