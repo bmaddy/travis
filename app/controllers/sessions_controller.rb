@@ -2,6 +2,7 @@
 class SessionsController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
   include AuthenticatedSystem
+  filter_parameter_logging :password, :password_confirmation
 
   # render new.rhtml
   def new
