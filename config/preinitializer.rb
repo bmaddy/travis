@@ -18,9 +18,8 @@ rescue Bundler::GemNotFound
   raise RuntimeError, "Bundler couldn't find some gems." +
     "Did you run `bundle install`?"
 end
+
 require 'bigdecimal'
-
-
 class BigDecimal
 
   def encode_with(coder)

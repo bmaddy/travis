@@ -7,7 +7,7 @@ gem 'sunspot'
 gem 'sunspot_rails'
 gem 'lockfile'
 gem 'ziya'
-gem 'will_paginate', :require=>'will_paginate'
+gem 'will_paginate', "~> 2.3.15"
 gem 'calendar_date_select'
 gem 'fastercsv'
 gem 'pg'

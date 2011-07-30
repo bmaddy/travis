@@ -83,5 +83,5 @@ DEPENDENCIES
   ruby-debug19
   sunspot
   sunspot_rails
-  will_paginate
+  will_paginate (~> 2.3.15)
   ziya
